@@ -1,25 +1,70 @@
 import tkinter as tk
 from tkinter import ttk
+
+
 class Tkinter_Test:
     def __init__(self, root):
-        root.title("Hello World")
-        root.geometry("160x160+250+250")
-        frm = ttk.Frame(root, width=160, height=160, padding=10)#creates a frame widget that is fit inside the root window
-        frm.grid()#initializes a relative grid for the window within the frame
-        self.uname = tk.StringVar()
-        self.uname_display = tk.StringVar()
+        self.utitle = tk.StringVar(value="Default title")
+        root.title(self.utitle.get())
+        root.geometry("320x240+250+250")
+        root.rowconfigure((0,1,2,3,4,5,6),weight=1)
+        root.columnconfigure(0, weight=1)
+        frm = ttk.Frame(root, borderwidth=2, relief="sunken", width=240, height=240, padding=10)#creates a frame widget that is fit inside the root window
+        frm.grid(rowspan=7, columnspan=2, sticky="nsew")#initializes a relative grid for the window within the frame
+        frm.columnconfigure((0,1), weight=1)
+        frm.rowconfigure((0,1,2,3,4,5,6), weight=1)
+        self.ulabel = tk.StringVar(value="Label")
+        self.ulabel_display = tk.StringVar(value="Label")
 
-        ttk.Label(frm, textvariable=self.uname_display).grid(column=2, row=1)#inserts a static label , using columns and rows for relative positioning within the previously created grid
-        ttk.Entry(frm, textvariable=self.uname).grid(column=2, row=2)
-        ttk.Button(frm, text="Submit",command=self.submit_name).grid(column=2, row=3)#creates a Quit button to the relative right of the label previously created
-        ttk.Button(frm, text="Quit",command=root.destroy).grid(column=2, row=4)#creates a Quit button to the relative right of the label previously created
+        ttk.Label(frm, textvariable=self.ulabel_display).grid(column=0, row=0,)#inserts a static label , using columns and rows for relative positioning within the previously created grid
+        ttk.Entry(frm, textvariable=self.ulabel).grid(column=0, row=1)
+        ttk.Button(frm, text="Submit Label",command=self.submit_label).grid(column=0, row=2)#creates a submit button that will change the label above it directly below
+        
+        ttk.Label(frm, text="Window Title").grid(column=1, row=0)
+        ttk.Entry(frm, textvariable=self.utitle).grid(column=1, row=1)
+        ttk.Button(frm, text="Submit Title",command=self.submit_title).grid(column=1, row=2)#creates a submit button that will change the window title
+        
+        rightsideFrm = ttk.Frame(root, borderwidth=2, relief="groove", padding=5, width=80, height=240)
+        rightsideFrm.grid(columnspan=2, column=2, rowspan=7, row=0, sticky="nsew")
+       
+        self.win_width = tk.StringVar(value="0")
+        self.win_height = tk.StringVar(value="0")
+        root.bind("<Configure>",self.on_resize)
 
+        ttk.Label(rightsideFrm, text="Width(px)").grid(column=0,row=1,rowspan=3)
+        ttk.Label(rightsideFrm, textvariable=self.win_width).grid(column=1,row=1,rowspan=3,ipadx=3)
+        ttk.Label(rightsideFrm, text="Height(px)").grid(column=0,row=4,rowspan=3)
+        ttk.Label(rightsideFrm, textvariable=self.win_height).grid(column=1,row=4,rowspan=3,ipadx=3)
 
-    def submit_name(self):
+        bottomFrm = ttk.Frame(root, borderwidth=2, relief="groove", padding=5)
+        bottomFrm.grid(columnspan=4, column=0, row=7, sticky="we")
+        bottomFrm.columnconfigure((0,1,2,3), weight=1)
+        
+        ttk.Checkbutton(bottomFrm, text="Check 1").grid(column=0, row=7)
+        ttk.Checkbutton(bottomFrm, text="Check 2").grid(column=1, row=7)
+        ttk.Checkbutton(bottomFrm, text="Check 3").grid(column=2, row=7)
+        ttk.Checkbutton(bottomFrm, text="Check 4").grid(column=3, row=7)
+        ttk.Button(frm, text="Quit",command=root.destroy).grid(column=0, row=6, columnspan=2)#creates a Quit button
+    
+    def on_resize(self, event):
         try:
-            self.uname_display.set(self.uname.get())
+            container = str(event.widget)
+            if (container == "."):
+                if(self.win_height.get() != event.height or self.win_width.get() != event.width):
+                    self.win_height.set(str(event.height))
+                    self.win_width.set(str(event.width))
         except ValueError:
             pass
+    def submit_label(self):
+        try:
+            self.ulabel_display.set(self.ulabel.get())
+        except ValueError:
+            pass
+    def submit_title(self):
+        try:
+            root.title(self.utitle.get())
+        except ValueError:
+            pass        
 
 #root is the root of the window(top level window)
 root = tk.Tk()
