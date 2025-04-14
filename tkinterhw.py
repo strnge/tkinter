@@ -16,18 +16,21 @@ class Tkinter_Test:
 
         self.ulabel = tk.StringVar(value="Label")#these tk stringvars are bound to python vars, and when updated are automatically reflected in the ui
         self.ulabel_display = tk.StringVar(value="Label")
-
+        #widgets for left side of frm
         ttk.Label(frm, textvariable=self.ulabel_display).grid(column=0, row=0,)#inserts a static label , using columns and rows for relative positioning within the previously created grid
         ttk.Entry(frm, textvariable=self.ulabel).grid(column=0, row=1)#input field for user text
         ttk.Button(frm, text="Submit Label",command=self.submit_label).grid(column=0, row=2)#creates a submit button that will change the label above it directly below
-        
+        #widgets for right side of frm
         ttk.Label(frm, text="Window Title").grid(column=1, row=0)
         ttk.Entry(frm, textvariable=self.utitle).grid(column=1, row=1)#input field for user text
         ttk.Button(frm, text="Submit Title",command=self.submit_title).grid(column=1, row=2)#creates a submit button that will change the window title
-        
+        #bottom span of frm
+        ttk.Button(frm, text="Quit",command=root.destroy).grid(column=0, row=6, columnspan=2)#creates a Quit button
+        #widgets for seperate right side frm
         rightsideFrm = ttk.Frame(root, borderwidth=2, relief="groove", padding=5, width=80, height=240)#generates subframe for rightside
         rightsideFrm.grid(columnspan=2, column=2, rowspan=7, row=0, sticky="nsew")#sets up grid for placement control
        
+       #bind the variables for the size displays
         self.win_width = tk.StringVar(value="0")
         self.win_height = tk.StringVar(value="0")
         root.bind("<Configure>",self.on_resize)#binds the <Configure> event to callback the on_resize function, which will update the size display
@@ -48,12 +51,12 @@ class Tkinter_Test:
         ttk.Checkbutton(bottomFrm, text="Check 3").grid(column=2, row=7)
         ttk.Checkbutton(bottomFrm, text="Check 4").grid(column=3, row=7)
         
-        ttk.Button(frm, text="Quit",command=root.destroy).grid(column=0, row=6, columnspan=2)#creates a Quit button
+        
     
     def on_resize(self, event):
         try:
             container = str(event.widget)
-            if (container == "."):
+            if (container == "."):#filters the event tracker to only collect resize events from the topmost widget (root)
                 if(self.win_height.get() != event.height or self.win_width.get() != event.width):
                     self.win_height.set(str(event.height))
                     self.win_width.set(str(event.width))
